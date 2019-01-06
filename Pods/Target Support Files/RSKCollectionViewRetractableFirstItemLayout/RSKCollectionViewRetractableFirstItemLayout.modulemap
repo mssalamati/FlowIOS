@@ -1,0 +1,6 @@
+framework module RSKCollectionViewRetractableFirstItemLayout {
+  umbrella header "RSKCollectionViewRetractableFirstItemLayout-umbrella.h"
+
+  export *
+  module * { export * }
+}
