@@ -20,6 +20,11 @@
 		3A2209E021E2670200AF9247 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209D821E2670200AF9247 /* TokenManager.swift */; };
 		3A2209E121E2670200AF9247 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209D921E2670200AF9247 /* Media.swift */; };
 		3A2209E221E2670200AF9247 /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209DA21E2670200AF9247 /* APIResponse.swift */; };
+		3A2209E521E3482100AF9247 /* Accessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209E421E3482100AF9247 /* Accessory.swift */; };
+		3A2209E721E3486800AF9247 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209E621E3486800AF9247 /* Group.swift */; };
+		3A2209E921E37EC200AF9247 /* GroupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209E821E37EC200AF9247 /* GroupCollectionViewCell.swift */; };
+		3A2209EB21E37EFB00AF9247 /* GroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209EA21E37EFB00AF9247 /* GroupViewController.swift */; };
+		3A2209ED21E3959900AF9247 /* SingleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2209EC21E3959900AF9247 /* SingleViewController.swift */; };
 		8707A332FD224BC76649AC7D /* Pods_Flow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A066927F38E8C6AD195E4B43 /* Pods_Flow.framework */; };
 		D37A68A8E7B7CB1B5FFDBC5C /* Pods_FlowUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAD177E9AC39A9D444A2DA59 /* Pods_FlowUITests.framework */; };
 /* End PBXBuildFile section */
@@ -61,6 +66,11 @@
 		3A2209D821E2670200AF9247 /* TokenManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		3A2209D921E2670200AF9247 /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		3A2209DA21E2670200AF9247 /* APIResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
+		3A2209E421E3482100AF9247 /* Accessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Accessory.swift; sourceTree = "<group>"; };
+		3A2209E621E3486800AF9247 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		3A2209E821E37EC200AF9247 /* GroupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCollectionViewCell.swift; sourceTree = "<group>"; };
+		3A2209EA21E37EFB00AF9247 /* GroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupViewController.swift; sourceTree = "<group>"; };
+		3A2209EC21E3959900AF9247 /* SingleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleViewController.swift; sourceTree = "<group>"; };
 		681692A051118861E09BB533 /* Pods-FlowUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlowUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FlowUITests/Pods-FlowUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		86C0639861640ACC6DCE7E03 /* Pods_FlowTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FlowTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B414C9B052FD596BF431748 /* Pods-Flow.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flow.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Flow/Pods-Flow.debug.xcconfig"; sourceTree = "<group>"; };
@@ -127,6 +137,8 @@
 				3A2209CC21E25A8E00AF9247 /* Extensions */,
 				3A22099A21E2131100AF9247 /* AppDelegate.swift */,
 				3A2209CA21E2585200AF9247 /* HomeViewController.swift */,
+				3A2209EA21E37EFB00AF9247 /* GroupViewController.swift */,
+				3A2209EC21E3959900AF9247 /* SingleViewController.swift */,
 				3A2209A021E2131100AF9247 /* Main.storyboard */,
 				3A2209A521E2131300AF9247 /* LaunchScreen.storyboard */,
 				3A2209A821E2131300AF9247 /* Info.plist */,
@@ -167,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				3A2209CE21E25AAC00AF9247 /* TextCollectionViewCell.swift */,
+				3A2209E821E37EC200AF9247 /* GroupCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -185,6 +198,8 @@
 				3A2209D821E2670200AF9247 /* TokenManager.swift */,
 				3A2209D921E2670200AF9247 /* Media.swift */,
 				3A2209DA21E2670200AF9247 /* APIResponse.swift */,
+				3A2209E421E3482100AF9247 /* Accessory.swift */,
+				3A2209E621E3486800AF9247 /* Group.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -428,12 +443,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A2209E721E3486800AF9247 /* Group.swift in Sources */,
 				3A2209E021E2670200AF9247 /* TokenManager.swift in Sources */,
 				3A22099B21E2131100AF9247 /* AppDelegate.swift in Sources */,
+				3A2209EB21E37EFB00AF9247 /* GroupViewController.swift in Sources */,
 				3A2209E221E2670200AF9247 /* APIResponse.swift in Sources */,
 				3A2209DC21E2670200AF9247 /* DataManager.swift in Sources */,
+				3A2209ED21E3959900AF9247 /* SingleViewController.swift in Sources */,
 				3A2209E121E2670200AF9247 /* Media.swift in Sources */,
 				3A2209CF21E25AAC00AF9247 /* TextCollectionViewCell.swift in Sources */,
+				3A2209E521E3482100AF9247 /* Accessory.swift in Sources */,
+				3A2209E921E37EC200AF9247 /* GroupCollectionViewCell.swift in Sources */,
 				3A2209CB21E2585200AF9247 /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

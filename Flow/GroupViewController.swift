@@ -1,19 +1,20 @@
 //
-//  HomeViewController.swift
+//  GroupViewController.swift
 //  Flow
 //
-//  Created by adb on 1/6/19.
+//  Created by adb on 1/7/19.
 //  Copyright © 2019 Arena. All rights reserved.
 //
 
 import UIKit
 import RSKCollectionViewRetractableFirstItemLayout
 
-class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class GroupViewController: UIViewController , UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     @IBOutlet fileprivate weak var connectionStatus: UILabel!
     @IBOutlet fileprivate weak var collectionView: UICollectionView!
-    
-    var accessoryList:[Accessory] = [Accessory]()
+    var groupId:Int?
+    var groupName:String?
+    var groupList:[Group] = [Group]()
     
     fileprivate var readyForPresentation = false
     
@@ -22,29 +23,15 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewDidLoad()
         
         SetGradientBackground()
-    
-        
-        self.collectionView.register(TextCollectionViewCell.self, forCellWithReuseIdentifier: "TextCollectionViewCell.identifier")
-        self.collectionView.backgroundColor = UIColor.clear
-        self.collectionView.backgroundView?.backgroundColor = UIColor.clear
-        if let collectionViewLayout = self.collectionView.collectionViewLayout as? RSKCollectionViewRetractableFirstItemLayout {
-            
-            collectionViewLayout.firstItemRetractableAreaInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
-        }
-    }
-    
-    
-    internal override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
         let manager = DataManager()
         
-        manager.GetAccessories(groupId: 1, completion: {(APIResponse)-> Void in
+        manager.GetGroups(completion: {(APIResponse)-> Void in
             
             
             if (APIResponse.count > 0)
             {
                 self.connectionStatus.text = "Connected"
-                self.accessoryList = APIResponse
+                self.groupList = APIResponse
                 self.collectionView.reloadData()
             }
             else
@@ -53,7 +40,17 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
             
         })
+        
+        
+        self.collectionView.register(GroupCollectionViewCell.self, forCellWithReuseIdentifier: "TextCollectionViewCell.identifier")
+        self.collectionView.backgroundColor = UIColor.clear
+        self.collectionView.backgroundView?.backgroundColor = UIColor.clear
+        if let collectionViewLayout = self.collectionView.collectionViewLayout as? RSKCollectionViewRetractableFirstItemLayout {
+            
+            collectionViewLayout.firstItemRetractableAreaInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
+        }
     }
+    
     
     // MARK: - Layout
     
@@ -68,7 +65,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         self.readyForPresentation = true
         
-//        let searchItemIndexPath = IndexPath(item: 0, section: 0)
+        //        let searchItemIndexPath = IndexPath(item: 0, section: 0)
         self.collectionView.contentOffset = CGPoint(x: 0.0, y:0)// self.collectionView(self.collectionView, layout: self.collectionView.collectionViewLayout, sizeForItemAt: searchItemIndexPath).height)
     }
     
@@ -77,29 +74,21 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         switch indexPath.section {
             
         case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextCollectionViewCell.identifier", for: indexPath) as! TextCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TextCollectionViewCell.identifier", for: indexPath) as! GroupCollectionViewCell
             
-            let accessory:Accessory = self.accessoryList[indexPath.item]
+            let group:Group = self.groupList[indexPath.item]
             
             cell.colorView.layer.cornerRadius = 15.0
             cell.colorView.layer.masksToBounds = true
-            cell.colorView.backgroundColor = UIColor.init(white: 1, alpha: 0.7)
+            cell.colorView.backgroundColor = UIColor.init(white: 1, alpha: 0.9)
             
-            cell.label.textColor = UIColor.darkGray
+            cell.label.textColor = UIColor.black
             cell.label.font = UIFont.systemFont(ofSize: 13, weight: .bold)
             cell.label.numberOfLines = 0
             cell.label.textAlignment = .left
-            cell.label.text = accessory.Name
-            let image = UIImage(named: "light-bulb")?.withRenderingMode(.alwaysTemplate)
-            cell.iconImage.setImage(image, for: .normal)
-            cell.iconImage.tintColor = UIColor.gray
+            cell.label.text = group.Name == "اتاق" ? "Room" : "Hall"
             
-            if accessory.State == true
-            {
-                cell.label.textColor = UIColor.black
-                cell.colorView.backgroundColor = UIColor.init(white: 1, alpha: 0.9)
-                cell.iconImage.setImage(UIImage.init(named: "light-bulb"), for: .normal)
-            }
+        
             
             return cell
             
@@ -113,7 +102,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         switch section {
             
         case 0:
-            return self.accessoryList.count
+            return self.groupList.count
             
         default:
             assert(false)
@@ -154,7 +143,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         switch indexPath.section {
             
         case 0:
-            let numberOfItemsInLine: CGFloat = 3
+            let numberOfItemsInLine: CGFloat = 2
             
             let inset = self.collectionView(collectionView, layout: collectionViewLayout, insetForSectionAt: indexPath.section)
             let minimumInteritemSpacing = self.collectionView(collectionView, layout: collectionViewLayout, minimumInteritemSpacingForSectionAt: indexPath.section)
@@ -162,7 +151,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             let itemWidth = (collectionView.frame.width - inset.left - inset.right - minimumInteritemSpacing * (numberOfItemsInLine - 1)) / numberOfItemsInLine
             let itemHeight = itemWidth
             
-            return CGSize(width: itemWidth, height: itemHeight)
+            return CGSize(width: itemWidth, height: itemHeight-40)
             
         default:
             assert(false)
@@ -171,65 +160,29 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     internal func collectionView(_ collectionView: UICollectionView,
                                  shouldSelectItemAt indexPath: IndexPath) -> Bool {
-                
-        let accessory:Accessory = self.accessoryList[indexPath.item]
-        if accessory.State == false
-        {
-            let cell = collectionView.cellForItem(at: indexPath) as! TextCollectionViewCell
-            
-            
-            UIView.animate(withDuration: 0.4,
-                           delay: 0.1,
-                           options: UIView.AnimationOptions.curveEaseIn,
-                           animations: { () -> Void in
-                            cell.label.textColor = UIColor.black
-                            cell.colorView.backgroundColor = UIColor.init(white: 1, alpha: 0.9)
-                            
-            }, completion: { (finished) -> Void in
-                cell.iconImage.setImage(UIImage.init(named: "light-bulb"), for: .normal)
-            })
-            
-            
-            accessory.State = true
-            SendCommand(id: accessory.Id!, command: "True")
-        }
-        else
-        {
-            let cell = collectionView.cellForItem(at: indexPath) as! TextCollectionViewCell
-            
-            UIView.animate(withDuration: 0.4,
-                           delay: 0.1,
-                           options: UIView.AnimationOptions.curveEaseIn,
-                           animations: { () -> Void in
-                            cell.label.textColor = UIColor.darkGray
-                            cell.colorView.backgroundColor = UIColor.init(white: 1, alpha: 0.7)
-                            
-            }, completion: { (finished) -> Void in
-                let image = UIImage(named: "light-bulb")?.withRenderingMode(.alwaysTemplate)
-                cell.iconImage.setImage(image, for: .normal)
-                cell.iconImage.tintColor = UIColor.gray
-            })
-            
+        
+        
+        let group:Group = self.groupList[indexPath.item]
+        groupName = group.Name
+        groupId = group.Id
+        self.performSegue(withIdentifier: "single", sender: self)
 
-            accessory.State = false
-            SendCommand(id: accessory.Id!, command: "False")
-        }
         return false
     }
     
     internal func collectionView(_ collectionView: UICollectionView,
                                  didDeselectItemAt indexPath: IndexPath) {
         
-//        guard sharing else {
-//            return
-//        }
-//
-//        let photo = photoForIndexPath(indexPath)
-//
-//        if let index = selectedPhotos.indexOf(photo) {
-//            selectedPhotos.removeAtIndex(index)
-//            updateSharedPhotoCount()
-//        }
+        //        guard sharing else {
+        //            return
+        //        }
+        //
+        //        let photo = photoForIndexPath(indexPath)
+        //
+        //        if let index = selectedPhotos.indexOf(photo) {
+        //            selectedPhotos.removeAtIndex(index)
+        //            updateSharedPhotoCount()
+        //        }
     }
     
     internal func SendCommand(id:Int,command:String)
@@ -240,6 +193,18 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             
         })
         
+    }
+    
+
+    
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination as! SingleViewController
+        destination.groupId = groupId
+        destination.groupName = groupName
+
     }
     
     func SetGradientBackground() {
@@ -253,16 +218,5 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         self.view.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
-}
 
+}

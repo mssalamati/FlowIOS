@@ -16,16 +16,15 @@ protocol DataManagerDelegate :class {
 }
 class DataManager: NSObject {
 
-    var baseURL = "http://192.168.3.2/"
+    var baseURL = "http://192.168.4.1/"
     var delegate:DataManagerDelegate?
 
-   
-    func CheckCode(Code:String,phonenumber:String,completion: @escaping (APIResponse) -> Void) {
+    func SendCommand(Id:Int,Command:String,completion: @escaping (APIResponse) -> Void) {
         
-        let params: [String: Any] = ["phone":phonenumber,"password":Code]
+        let params: [String: Any] = ["id":Id,"command":Command]
         let response = APIResponse()
         
-        Alamofire.request(baseURL+"gettoken", method: .post, parameters: params, encoding: URLEncoding.default, headers: nil).responseJSON { (responseData) -> Void in
+        Alamofire.request(baseURL+"command", method: .get, parameters: params, encoding: URLEncoding.default).responseJSON { (responseData) -> Void in
             if((responseData.result.value) != nil) {
                 
                 print(responseData)
@@ -35,33 +34,30 @@ class DataManager: NSObject {
                     case 200:
                         if let resData = JSON(responseData.result.value!).dictionaryObject {
                             if resData.count > 0 {
-                                response.message = resData["message"] as? String
-                                response.result = true
-                                response.token = resData["token"] as? String   
+//                                response.message = resData["message"] as? String
+//                                response.result = true
+//                                response.token = resData["token"] as? String
                             }
                         }
                     default:
                         if let resData = JSON(responseData.result.value!).dictionaryObject {
                             if resData.count > 0 {
-                                response.message = resData["message"] as? String
-                                response.result = false                                
+//                                response.message = resData["message"] as? String
+//                                response.result = false                                
                             }
                         }
                         print("error with response status: \(status)")
                     }
                 }
-                
-                
             }
             completion(response)
         }
     }
     
-    func GetAlbum(page:Int,completion: @escaping ([Media]) -> Void) {
+    func GetGroups(completion: @escaping ([Group]) -> Void) {
         
-        let params: [String: Any] = ["page":page]
         let response = APIResponse()
-        var medias = [Media]()
+        var groups = [Group]()
         
         Alamofire.request(baseURL+"group", method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (responseData) -> Void in
             if((responseData.result.value) != nil) {
@@ -78,13 +74,10 @@ class DataManager: NSObject {
                                 
                                 for item in (resData["data"] as? [NSDictionary])!
                                 {                                 
-                                    let media = Media()
-                                    media.id = item["id"] as? String;
-                                    media.mediaType = item["type"] as? String;
-                                    media.thumb = item["thumb"] as? String;
-                                    media.path = item["path"] as? String;
-                                    media.title = item["title"] as? String;
-                                    medias.append(media)
+                                    let group = Group()
+                                    group.Id = item["id"] as? Int;
+                                    group.Name = item["name"] as? String;
+                                    groups.append(group)
                                 }
                                 
                             }
@@ -99,11 +92,51 @@ class DataManager: NSObject {
                         print("error with response status: \(status)")
                     }
                 }
-                
-                
             }
-            completion(medias)
+            completion(groups)
         }
-    }        
-  
+    }
+    
+    func GetAccessories(groupId:Int,completion: @escaping ([Accessory]) -> Void) {
+        let params: [String: Any] = ["id":groupId]
+        let response = APIResponse()
+        var accessories = [Accessory]()
+        
+        Alamofire.request(baseURL+"status", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil).responseJSON { (responseData) -> Void in
+            if((responseData.result.value) != nil) {
+                
+                print(responseData)
+                //to get status code
+                if let status = responseData.response?.statusCode {
+                    switch(status){
+                    case 200:
+                        if let resData = JSON(responseData.result.value!).dictionaryObject {
+                            if resData.count > 0 {
+                                
+                                response.result = true
+                                
+                                for item in (resData["data"] as? [NSDictionary])!
+                                {
+                                    let accessory = Accessory()
+                                    accessory.Id = item["id"] as? Int;
+                                    accessory.Name = item["name"] as? String;
+                                    accessory.State = item["status"] as? Bool;
+                                    accessories.append(accessory)
+                                }
+                            }
+                        }
+                    default:
+                        if let resData = JSON(responseData.result.value!).dictionaryObject {
+                            if resData.count > 0 {
+                                response.message = resData["message"] as? String
+                                response.result = false
+                            }
+                        }
+                        print("error with response status: \(status)")
+                    }
+                }
+            }
+            completion(accessories)
+        }
+    }  
 }

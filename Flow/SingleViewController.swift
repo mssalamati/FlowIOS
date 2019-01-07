@@ -1,16 +1,19 @@
 //
-//  HomeViewController.swift
+//  SingleViewController.swift
 //  Flow
 //
-//  Created by adb on 1/6/19.
+//  Created by adb on 1/7/19.
 //  Copyright © 2019 Arena. All rights reserved.
 //
 
 import UIKit
 import RSKCollectionViewRetractableFirstItemLayout
 
-class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class SingleViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    var groupId:Int!
+    var groupName:String!
     @IBOutlet fileprivate weak var connectionStatus: UILabel!
+    @IBOutlet fileprivate weak var groupNameLabel: UILabel!
     @IBOutlet fileprivate weak var collectionView: UICollectionView!
     
     var accessoryList:[Accessory] = [Accessory]()
@@ -20,9 +23,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     internal override func viewDidLoad() {
         
         super.viewDidLoad()
-        
         SetGradientBackground()
-    
+        groupNameLabel.text = groupName == "اتاق" ? "Room" : "Hall"
+            
         
         self.collectionView.register(TextCollectionViewCell.self, forCellWithReuseIdentifier: "TextCollectionViewCell.identifier")
         self.collectionView.backgroundColor = UIColor.clear
@@ -33,12 +36,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
-    
     internal override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         let manager = DataManager()
         
-        manager.GetAccessories(groupId: 1, completion: {(APIResponse)-> Void in
+        manager.GetAccessories(groupId: groupId, completion: {(APIResponse)-> Void in
             
             
             if (APIResponse.count > 0)
@@ -54,7 +56,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             
         })
     }
-    
     // MARK: - Layout
     
     internal override func viewDidLayoutSubviews() {
@@ -68,7 +69,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         self.readyForPresentation = true
         
-//        let searchItemIndexPath = IndexPath(item: 0, section: 0)
+        //        let searchItemIndexPath = IndexPath(item: 0, section: 0)
         self.collectionView.contentOffset = CGPoint(x: 0.0, y:0)// self.collectionView(self.collectionView, layout: self.collectionView.collectionViewLayout, sizeForItemAt: searchItemIndexPath).height)
     }
     
@@ -93,7 +94,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             let image = UIImage(named: "light-bulb")?.withRenderingMode(.alwaysTemplate)
             cell.iconImage.setImage(image, for: .normal)
             cell.iconImage.tintColor = UIColor.gray
-            
             if accessory.State == true
             {
                 cell.label.textColor = UIColor.black
@@ -171,7 +171,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     internal func collectionView(_ collectionView: UICollectionView,
                                  shouldSelectItemAt indexPath: IndexPath) -> Bool {
-                
+        
         let accessory:Accessory = self.accessoryList[indexPath.item]
         if accessory.State == false
         {
@@ -210,7 +210,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 cell.iconImage.tintColor = UIColor.gray
             })
             
-
+            
             accessory.State = false
             SendCommand(id: accessory.Id!, command: "False")
         }
@@ -220,16 +220,16 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     internal func collectionView(_ collectionView: UICollectionView,
                                  didDeselectItemAt indexPath: IndexPath) {
         
-//        guard sharing else {
-//            return
-//        }
-//
-//        let photo = photoForIndexPath(indexPath)
-//
-//        if let index = selectedPhotos.indexOf(photo) {
-//            selectedPhotos.removeAtIndex(index)
-//            updateSharedPhotoCount()
-//        }
+        //        guard sharing else {
+        //            return
+        //        }
+        //
+        //        let photo = photoForIndexPath(indexPath)
+        //
+        //        if let index = selectedPhotos.indexOf(photo) {
+        //            selectedPhotos.removeAtIndex(index)
+        //            updateSharedPhotoCount()
+        //        }
     }
     
     internal func SendCommand(id:Int,command:String)
@@ -240,6 +240,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             
         })
         
+    }
+
+    @IBAction func BackAction(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     func SetGradientBackground() {
@@ -254,15 +258,4 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         self.view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }
-
